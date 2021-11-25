@@ -5,7 +5,7 @@ import numpy as np                      #imports the numpy library
 import matplotlib.pyplot as plt         #imports the matplotlib library
 
 #function to display the menu of ozone data choices and the colour choice
-def displayMenu(options):
+def Menu(options):
     for i in range (len(options)):
         print("{:d}. {:s}".format(i+1, options[i]))
     
@@ -32,20 +32,20 @@ colourChoices = np.array(["Normal", "Protanopia", "Deuteranopia", "Tritanopia"])
 
 
 #Stores the path to the file "Combined.nc", which is the "o3_surface_20180701000000.nc" but renamed
-datafile=r'C:\Users\luisl\Desktop\EZ\Combined.nc' #EDIT HERE -> edit to the path where your "Combined.nc" file is located
+filepath=r"Combined.nc" #EDIT HERE -> edit to the path where your "Combined.nc" file is located
 
-file2read = netcdf.NetCDFFile(datafile,'r')             #gets the path to the file and stores the information inside this variable
+readNetCDF = netcdf.NetCDFFile(filepath,'r')             #gets the path to the file and stores the information inside this variable
 dataType = 'chimere_ozone'                              #declares a default value for dataType
-ozoneData = file2read.variables[dataType][:]*1          #declares a default value for ozoneData
-lon = file2read.variables['lon'][:]*1                   #gets the longitude value from the .nc file
-lat =  file2read.variables['lat'][:]*1                  #gets the latitude value from the .nc file
-hours =  file2read.variables['hour'][:]*1               #gets the hours value from the .nc file
+ozoneData = readNetCDF.variables[dataType][:]*1          #declares a default value for ozoneData
+lon = readNetCDF.variables['lon'][:]*1                   #gets the longitude value from the .nc file
+lat =  readNetCDF.variables['lat'][:]*1                  #gets the latitude value from the .nc file
+hours =  readNetCDF.variables['hour'][:]*1               #gets the hours value from the .nc file
 time = len(hours)                                       #stores the lenght of the hours variable
 
 print("\nOzone data types: \n")                         #prints "Ozone data types: " to the user
 
 #calls the function displayMenu with the menuChoices as argument and stores user input in the choice variable
-choice = displayMenu(menuChoices);
+choice = Menu(menuChoices);
 
 while True:
     if choice == 1:                                     #if the user choice is 1
@@ -81,7 +81,7 @@ while True:
 print("\nColours: \n")                                      #prints "Colours: " to the user
 
 #calls the function displayMenu with the colourChoices as argument and stores user input in the colourChoice variable
-colourChoice = displayMenu(colourChoices)
+colourChoice = Menu(colourChoices)
 
 while True:
     if colourChoice == 1:                                   #if the user choice is 1
@@ -102,7 +102,7 @@ while True:
         break
  
 
-ozoneData = file2read.variables[dataType][:]*1              #sets the value of ozoneData to match the dataType that the user chose
+ozoneData = readNetCDF.variables[dataType][:]*1              #sets the value of ozoneData to match the dataType that the user chose
 
 x,y = np.meshgrid(lon, lat)                                 #creates a meshgrid with the values of lat and lon
 
@@ -110,7 +110,7 @@ plt.ion()                                                   #enables the interac
 
 fig = plt.figure(figsize=(10,6))                            #creates a figure with 10 inches width and 6 inches height
 
-world = gpd.read_file(r'C:\Users\luisl\Desktop\Mapa\Europe_coastline.shp')  #gets the data from the shapefile Europe_coastline
+world = gpd.read_file(r"Europe_coastline.shp")  #gets the data from the shapefile Europe_coastline
 
 
 for i in range(0,time):                                             #for loop to go through all hours in the .nc file
@@ -119,6 +119,6 @@ for i in range(0,time):                                             #for loop to
     plt.title('The time is:{}'.format(i))                           #creates a title that shows the hour that corresponds with the data shown
     plt.xlabel('Latitude')                                          #stets the X label to Latitude
     plt.ylabel('Longitude')                                         #stets the Y label to Longitude
-    #plt.colorbar()                                                  #shows a colourbar on the side of the map
+    plt.colorbar()                                                  #shows a colourbar on the side of the map
     plt.pause(0.01)                                                 #pauses the loop for a bit so that the user can see the data without it updating so fast
     
